@@ -28,13 +28,15 @@ class SafetyShield:
     }
 
     # Protected paths (dangerous to modify)
+    # Protected system paths (too broad paths like "/" are excluded)
     PROTECTED_PATHS = [
-        Path("/"),
         Path("/System"),
         Path("/Library"),
         Path("/usr"),
         Path("/bin"),
         Path("/sbin"),
+        Path("/etc"),
+        Path("/var"),
     ]
 
     # Dangerous command patterns

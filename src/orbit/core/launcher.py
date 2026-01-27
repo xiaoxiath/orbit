@@ -101,12 +101,15 @@ class Launcher:
             Rendered script
 
         Raises:
-            TemplateRenderingError: If rendering fails
+            TemplateRenderingError: If rendering failed
         """
+        # Pre-process parameters to expand paths
+        processed_params = self._expand_paths(parameters)
+
         if not HAS_JINJA2:
             # Fallback to simple string formatting
             try:
-                return template.format(**parameters)
+                return template.format(**processed_params)
             except KeyError as e:
                 raise TemplateRenderingError(f"Missing parameter: {e}")
             except Exception as e:
@@ -114,9 +117,37 @@ class Launcher:
 
         try:
             jinja_template = Template(template)
-            return jinja_template.render(**parameters)
+            return jinja_template.render(**processed_params)
         except Exception as e:
             raise TemplateRenderingError(f"Template rendering failed: {e}")
+
+    def _expand_paths(self, parameters: dict) -> dict:
+        """Expand relative paths and ~ in parameters.
+
+        Args:
+            parameters: Original parameters
+
+        Returns:
+            Parameters with expanded paths
+        """
+        import os
+        from pathlib import Path
+
+        expanded = {}
+        for key, value in parameters.items():
+            # Expand path-like parameters
+            if isinstance(value, str) and key in ['path', 'dir', 'directory', 'folder', 'file']:
+                try:
+                    # Expand ~ and relative paths
+                    expanded_path = Path(value).expanduser().resolve()
+                    expanded[key] = str(expanded_path)
+                except (OSError, ValueError):
+                    # If path expansion fails, keep original value
+                    expanded[key] = value
+            else:
+                expanded[key] = value
+
+        return expanded
 
     def _execute_applescript(self, script: str, satellite: Satellite) -> str:
         """Execute AppleScript via osascript.

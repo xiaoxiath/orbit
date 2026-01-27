@@ -103,7 +103,7 @@ def format_satellite_table(satellites, show_details: bool = False):
 
 
 @click.group(invoke_without_command=True)
-@click.version_option(version="1.0.1", prog_name="orbit")
+@click.version_option(version="1.0.2", prog_name="orbit")
 @click.pass_context
 def cli(ctx):
     """
