@@ -2,13 +2,13 @@
 name = "orbit-macos"
 version = "1.0.0"
 description = "🛸 Orbit: Your AI's Bridge to macOS - Framework-agnostic automation toolkit with 104+ satellites"
-authors = ["tang123hao@gmail.com"]
-maintainers = ["tang123hao@gmail.com"]
+authors = ["xiaoxiath <tang123hao@gmail.com>"]
+maintainers = ["xiaoxiath <tang123hao@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/xiaoxiath/orbit"
 repository = "https://github.com/xiaoxiath/orbit"
-documentation = "https://github.com/xiaoxiath/orbit/docs"
+documentation = "https://github.com/xiaoxiath/orbit/tree/main/docs"
 keywords = [
     "macos",
     "automation",
