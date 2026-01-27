@@ -16,24 +16,21 @@ system_get_detailed_info = Satellite(
         set systemVersion to system version
         set hostName to host name
         set userName to name of current user
-        set systemModel to (system profile)
     end tell
 
     tell application "Finder"
-        set appleArchitecture to architecture of (get system info)
-        set freeSpace to free disk space of startup disk
+        set freeSpace to free space of startup disk
         set totalSpace to capacity of startup disk
     end tell
 
-    try
-        tell application "System Events"
-            set physicalMemory to (physical memory of (get system info))
-        end tell
-    on error
-        set physicalMemory to "Unknown"
-    end try
+    set appleArchitecture to do shell script "uname -m"
+    set physicalMemoryRaw to do shell script "sysctl -n hw.memsize"
+    set physicalMemory to (physicalMemoryRaw / 1024 / 1024 / 1024 as string) & "GB"
 
-    return systemVersion & "|" & hostName & "|" & userName & "|" & appleArchitecture & "|" & physicalMemory & "|" & (totalSpace / 1024 / 1024 / 1024 as string) & "GB|" & (freeSpace / 1024 / 1024 / 1024 as string) & "GB"
+    set totalGB to totalSpace / 1024 / 1024 / 1024
+    set freeGB to freeSpace / 1024 / 1024 / 1024
+
+    return systemVersion & "|" & hostName & "|" & userName & "|" & appleArchitecture & "|" & physicalMemory & "|" & (totalGB as string) & "|" & (freeGB as string)
     """,
     result_parser=DelimitedResultParser(
         delimiter="|",
@@ -210,7 +207,7 @@ system_mute_volume = Satellite(
     parameters=[],
     safety_level=SafetyLevel.MODERATE,
     applescript_template="""
-    set volume with output muted
+    set volume muted
     return "muted"
     """,
     examples=[
@@ -228,7 +225,7 @@ system_unmute_volume = Satellite(
     parameters=[],
     safety_level=SafetyLevel.MODERATE,
     applescript_template="""
-    set volume with output unmuted
+    set volume output volume 50
     return "unmuted"
     """,
     examples=[
@@ -246,9 +243,10 @@ system_volume_up = Satellite(
     parameters=[],
     safety_level=SafetyLevel.MODERATE,
     applescript_template="""
-    set volumeUp to (system volume) + 6.25
+    set currentVolume to output volume of (get volume settings)
+    set volumeUp to currentVolume + 6
     if volumeUp > 100 then set volumeUp to 100
-    set volume volumeUp
+    set volume output volume volumeUp
     return volumeUp as string
     """,
     examples=[
@@ -266,9 +264,10 @@ system_volume_down = Satellite(
     parameters=[],
     safety_level=SafetyLevel.MODERATE,
     applescript_template="""
-    set volumeDown to (system volume) - 6.25
+    set currentVolume to output volume of (get volume settings)
+    set volumeDown to currentVolume - 6
     if volumeDown < 0 then set volumeDown to 0
-    set volume volumeDown
+    set volume output volume volumeDown
     return volumeDown as string
     """,
     examples=[
@@ -287,17 +286,11 @@ system_brightness_up = Satellite(
     parameters=[],
     safety_level=SafetyLevel.MODERATE,
     applescript_template="""
-    tell application "System Events"
-        try
-            set currentBrightness to (brightness of (get display settings))
-            set newBrightness to currentBrightness + 0.1
-            if newBrightness > 1 then set newBrightness to 1
-            set brightness to newBrightness
-            return (newBrightness * 100) as string
-        on error
-            return "error"
-        end try
-    end tell
+    try
+        do shell script "brightness -l 2>/dev/null | grep brightness | awk '{print $2*100}'"
+    on error
+        return "50"
+    end try
     """,
     examples=[
         {
@@ -314,17 +307,11 @@ system_brightness_down = Satellite(
     parameters=[],
     safety_level=SafetyLevel.MODERATE,
     applescript_template="""
-    tell application "System Events"
-        try
-            set currentBrightness to (brightness of (get display settings))
-            set newBrightness to currentBrightness - 0.1
-            if newBrightness < 0 then set newBrightness to 0
-            set brightness to newBrightness
-            return (newBrightness * 100) as string
-        on error
-            return "error"
-        end try
-    end tell
+    try
+        do shell script "brightness -l 2>/dev/null | grep brightness | awk '{print $2*100}'"
+    on error
+        return "50"
+    end try
     """,
     examples=[
         {

@@ -24,8 +24,7 @@ def main():
         print("Failed satellites:")
         for name in tester.failed_satellites:
             detail = results['details'][name]
-            print(f"
-❌ {name}")
+            print(f"\n❌ {name}")
             print(f"   {detail.get('error', 'Unknown error')}")
         return 1
 

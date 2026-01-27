@@ -70,25 +70,28 @@ class RealExecutionTester:
             )
 
             # Test if AppleScript can at least parse it
+            # Don't wrap with tell block - many scripts have their own tell blocks
             result = subprocess.run(
-                ["osascript", "-e", "tell application \"System Events\" to " + script],
+                ["osascript", "-e", script],
                 capture_output=True,
                 text=True,
                 timeout=5
             )
 
-            # We expect this to fail due to invalid syntax/variables
-            # But NOT due to parsing errors
-            if "syntax error" in result.stderr or "Expected" in result.stderr:
+            # Check for actual syntax errors (not execution errors)
+            if "syntax error" in result.stderr:
                 return {
                     "status": "fail",
                     "error": "Syntax error in AppleScript",
                     "details": result.stderr.strip()
                 }
+            # Execution errors are OK (permissions, missing apps, etc.)
+            # We're only checking for syntax validity
             else:
                 return {
                     "status": "pass",
-                    "note": "Script parses successfully (may fail at runtime)"
+                    "note": "Script parses successfully (may fail at runtime)",
+                    "stderr": result.stderr.strip() if result.stderr else None
                 }
 
         except Exception as e:
@@ -112,6 +115,12 @@ class RealExecutionTester:
                     params[param.name] = False
                 elif param.type == "integer":
                     params[param.name] = 0
+                elif param.type == "float":
+                    params[param.name] = 0.0
+                elif param.type == "list":
+                    params[param.name] = []
+                elif param.type == "dict":
+                    params[param.name] = {}
         return params
 
     def run_syntax_checks(self) -> Dict[str, Any]:

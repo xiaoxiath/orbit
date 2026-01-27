@@ -193,14 +193,11 @@ system_get_brightness = Satellite(
     parameters=[],
     safety_level=SafetyLevel.SAFE,
     applescript_template="""
-    tell application "System Events"
-        try
-            set brightnessLevel to brightness of (get display settings)
-        on error
-            set brightnessLevel to 50
-        end try
-    end tell
-    return brightnessLevel
+    try
+        do shell script "brightness -l 2>/dev/null | grep brightness | awk '{print $2*100}'"
+    on error
+        return "50"
+    end try
     """,
     examples=[
         {
@@ -224,9 +221,8 @@ system_set_brightness = Satellite(
     ],
     safety_level=SafetyLevel.MODERATE,
     applescript_template="""
-    tell application "System Events"
-        set brightness to {{ level }}
-    end tell
+    set brightnessLevel to {{ level }} / 100
+    do shell script "brightness " & (brightnessLevel as string)
     return "{{ level }}"
     """,
     examples=[
