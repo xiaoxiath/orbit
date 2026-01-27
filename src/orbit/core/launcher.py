@@ -139,11 +139,24 @@ class Launcher:
             )
 
             if result.returncode != 0:
-                raise AppleScriptError(
-                    f"AppleScript execution failed: {result.stderr.strip()}",
-                    script=script,
-                    return_code=result.returncode,
-                )
+                error_msg = result.stderr.strip()
+                # Try to provide helpful permission hints
+                from orbit.core.permissions import format_error_with_hint
+                enhanced_error = format_error_with_hint(error_msg, satellite.name)
+
+                # If we got an enhanced error, use it; otherwise use standard error
+                if enhanced_error != f"❌ Error: {error_msg}":
+                    raise AppleScriptError(
+                        enhanced_error.strip(),
+                        script=script,
+                        return_code=result.returncode,
+                    )
+                else:
+                    raise AppleScriptError(
+                        f"AppleScript execution failed: {error_msg}",
+                        script=script,
+                        return_code=result.returncode,
+                    )
 
             return result.stdout.strip()
 

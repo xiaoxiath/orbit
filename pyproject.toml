@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "orbit-macos"
-version = "1.0.0"
+version = "1.0.1"
 description = "🛸 Orbit: Your AI's Bridge to macOS - Framework-agnostic automation toolkit with 104+ satellites"
 authors = ["xiaoxiath <tang123hao@gmail.com>"]
 maintainers = ["xiaoxiath <tang123hao@gmail.com>"]

@@ -257,12 +257,18 @@ def run(satellite_name, parameters, bypass_shield, timeout):
 
         # Display result
         click.echo(colorize("✅ Success!\n", Colors.OKGREEN))
-        if isinstance(result, dict):
-            click.echo(json.dumps(result, indent=2, ensure_ascii=False))
-        elif isinstance(result, list):
-            for item in result:
-                click.echo(f"  - {item}")
-        else:
+        try:
+            if isinstance(result, dict):
+                click.echo(json.dumps(result, indent=2, ensure_ascii=False))
+            elif isinstance(result, list):
+                for item in result:
+                    click.echo(f"  - {item}")
+            elif result is None or result == "":
+                click.echo(colorize("No output", Colors.OKCYAN))
+            else:
+                click.echo(str(result))
+        except Exception as display_error:
+            # Fallback display if formatting fails
             click.echo(str(result))
 
     except Exception as e:

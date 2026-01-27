@@ -6,6 +6,7 @@ from orbit.core.constellation import *
 from orbit.core.launcher import *
 from orbit.core.shield import *
 from orbit.core.mission_control import *
+from orbit.core import permissions
 
 __all__ = [
     # Exceptions
@@ -27,4 +28,6 @@ __all__ = [
     "SafetyShield",
     "ShieldAction",
     "MissionControl",
+    # Utilities
+    "permissions",
 ]
