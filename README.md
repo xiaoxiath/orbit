@@ -1,5 +1,7 @@
 # Orbit 🛸
 
+<img src="docs/logo.png" alt="Orbit Logo" width="200"/>
+
 > **Your AI's Bridge to macOS**
 > **让您的 AI 桥接到 macOS**
 

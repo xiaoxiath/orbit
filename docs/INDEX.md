@@ -1,5 +1,9 @@
 # Orbit Documentation Index
 
+<p align="center">
+  <img src="logo.png" alt="Orbit Logo" width="180"/>
+</p>
+
 > **Last Updated:** 2026-01-27
 
 ---

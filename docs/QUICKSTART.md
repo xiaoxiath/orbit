@@ -1,5 +1,7 @@
 # Orbit Quick Start Guide
 
+<img src="logo.png" alt="Orbit Logo" width="150"/>
+
 > **Get up and running with Orbit in 5 minutes**
 
 ---

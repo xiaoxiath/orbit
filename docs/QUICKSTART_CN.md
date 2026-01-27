@@ -1,5 +1,7 @@
 # Orbit 快速入门指南
 
+<img src="logo.png" alt="Orbit Logo" width="150"/>
+
 > **5 分钟上手 Orbit**
 
 ---

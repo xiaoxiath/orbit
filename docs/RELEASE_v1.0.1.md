@@ -1,5 +1,9 @@
 # Orbit v1.0.1 发布总结
 
+<p align="center">
+  <img src="logo.png" alt="Orbit Logo" width="180"/>
+</p>
+
 > **发布日期**: 2026-01-27
 > **PyPI**: https://pypi.org/project/orbit-macos/1.0.1/
 > **GitHub**: https://github.com/xiaoxiath/orbit/releases/tag/v1.0.1
