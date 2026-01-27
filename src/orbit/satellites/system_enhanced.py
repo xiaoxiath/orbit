@@ -207,7 +207,7 @@ system_mute_volume = Satellite(
     parameters=[],
     safety_level=SafetyLevel.MODERATE,
     applescript_template="""
-    set volume muted
+    set volume output volume 0
     return "muted"
     """,
     examples=[
