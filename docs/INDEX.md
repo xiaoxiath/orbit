@@ -26,7 +26,6 @@
 
 | Document | Description | Audience |
 |----------|-------------|----------|
-| [Brand Guidelines](BRAND.md) | Logo, colors, terminology | Designers, contributors |
 | [Terminology](TERMINOLOGY.md) | Orbit naming conventions | All users |
 
 ### Contributing

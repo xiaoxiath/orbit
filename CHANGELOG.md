@@ -164,6 +164,5 @@ Each release should include:
 **Note**: Orbit requires macOS to run as it relies on AppleScript for system automation.
 
 For more information, visit:
-- GitHub: https://github.com/your-org/macagent-orbit
-- PyPI: https://pypi.org/project/orbit-macos
-- Docs: https://docs.orbit-macos.dev
+- GitHub: https://github.com/xiaoxiath/orbit
+- Documentation: https://github.com/xiaoxiath/orbit/tree/main/docs

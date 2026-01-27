@@ -1,332 +1,319 @@
 # Orbit 🛸
 
-> **Put macOS automation in orbit**
-
-Orbit is a framework-agnostic toolkit that empowers AI agents to seamlessly interact with macOS through AppleScript. Whether you're building with LangChain, OpenAI Functions, or a custom agent framework, Orbit provides standardized, safe, and extensible tools for macOS automation.
-
----
-
-## 🌟 Features
-
-- **Framework Agnostic** - Works with any LLM/Agent framework
-- **Standardized Interface** - Unified function calling conventions
-- **Safety First** - Built-in permission management and security checks
-- **Highly Extensible** - Add new tools without modifying core code
-- **100+ Satellite Tools** - Comprehensive coverage of macOS capabilities
+> **Your AI's Bridge to macOS**
+> **让您的 AI 桥接到 macOS**
 
 ---
 
-## 🚀 Quick Start
+## 🌍 Language / 语言
 
-### Installation
+**[English](#english) | [简体中文](#中文)**
+
+---
+
+## English
+
+**Orbit** is a framework-agnostic macOS automation toolkit that empowers AI agents to seamlessly interact with macOS through AppleScript.
+
+### 🌟 Key Features
+
+- **100+ Satellites** - Comprehensive macOS automation tools
+- **4-Tier Safety** - Built-in security system (SAFE/MODERATE/DANGEROUS/CRITICAL)
+- **Framework Agnostic** - Works with OpenAI, LangChain, Anthropic, and custom agents
+- **CLI Tool Included** - Convenient terminal access to all satellites
+- **Bilingual Docs** - Complete documentation in English and Chinese
+
+### 🚀 Quick Start
 
 ```bash
+# Install
 pip install orbit-macos
-```
 
-### Basic Usage
-
-```python
+# Basic usage
 from orbit import MissionControl
-
-# Initialize mission control
-mission = MissionControl()
-
-# Register your satellite tools
 from orbit.satellites import all_satellites
+
+mission = MissionControl()
 mission.register_constellation(all_satellites)
-
-# Launch a mission
-result = mission.launch(
-    "system_get_info",
-    parameters={}
-)
-
-print(result)
-# {
-#   "version": "14.0",
-#   "hostname": "MacBook-Pro",
-#   "username": "astronaut",
-#   "architecture": "arm64"
-# }
+result = mission.launch("system_get_info", {})
 ```
+
+### 📚 Documentation
+
+#### Getting Started
+- **[Quick Start Guide](docs/QUICKSTART.md)** - Get up and running in 5 minutes
+- **[API Reference](docs/API_REFERENCE.md)** - Complete API documentation
+- **[CLI Reference](docs/CLI_REFERENCE.md)** - Command-line tool documentation
+
+#### Core Documentation
+- **[Design Document](docs/DESIGN.md)** - Architecture and technical details
+- **[Security Model](docs/SECURITY.md)** - Safety system and best practices
+- **[Satellites Reference](docs/SATELLITES.md)** - Complete list of all 104 satellites
+
+#### Guides
+- **[Terminology](docs/TERMINOLOGY.md)** - Orbit naming conventions
+- **[Contributing Guide](docs/CONTRIBUTING.md)** - How to contribute
+
+#### Examples
+- **[CLI Examples](examples/cli_examples.md)** - CLI usage examples
+- **[Python Examples](examples/)** - Code examples for various frameworks
+
+### 📦 Project Links
+
+- **[GitHub](https://github.com/xiaoxiath/orbit)** - Source code
+- **[Changelog](CHANGELOG.md)** - Version history
+- **[License](LICENSE)** - MIT License
+
+---
+
+## 中文
+
+**Orbit** 是一个框架无关的 macOS 自动化工具包，通过 AppleScript 赋能 AI 代理无缝操作 macOS。
+
+### 🌟 核心特性
+
+- **100+ 卫星工具** - 全面的 macOS 自动化能力
+- **四级安全系统** - 内置安全保护（安全/中等/危险/严重）
+- **框架无关** - 支持 OpenAI、LangChain、Anthropic 和自定义代理
+- **CLI 工具** - 方便的终端访问
+- **双语文档** - 完整的中英文文档
+
+### 🚀 快速开始
+
+```bash
+# 安装
+pip install orbit-macos
+
+# 基础用法
+from orbit import MissionControl
+from orbit.satellites import all_satellites
+
+mission = MissionControl()
+mission.register_constellation(all_satellites)
+result = mission.launch("system_get_info", {})
+```
+
+### 📚 文档
+
+#### 入门指南
+- **[快速入门](docs/QUICKSTART_CN.md)** - 5 分钟上手教程
+- **[API 参考文档](docs/API_REFERENCE_CN.md)** - 完整 API 文档
+- **[CLI 参考文档](docs/CLI_REFERENCE.md)** - 命令行工具文档
+
+#### 核心文档
+- **[设计文档](docs/DESIGN_CN.md)** - 架构和技术细节
+- **[安全模型](docs/SECURITY_CN.md)** - 安全系统和最佳实践
+- **[卫星参考手册](docs/SATELLITES_CN.md)** - 104 个卫星完整列表
+
+#### 指南
+- **[术语表](docs/TERMINOLOGY_CN.md)** - Orbit 命名规范
+- **[贡献指南](docs/CONTRIBUTING_CN.md)** - 如何贡献代码
+
+#### 示例
+- **[CLI 示例](examples/cli_examples.md)** - CLI 使用示例
+- **[Python 示例](examples/)** - 各种框架的代码示例
+
+### 📦 项目链接
+
+- **[GitHub](https://github.com/xiaoxiath/orbit)** - 源代码
+- **[更新日志](CHANGELOG.md)** - 版本历史
+- **[许可证](LICENSE)** - MIT 许可证
 
 ---
 
 ## 🛰️ Satellite Constellation
 
-Orbit provides a comprehensive constellation of satellite tools organized into categories:
+Orbit provides 104 satellites across 12 categories:
 
-### System Telemetry
-- `system_get_info` - Get macOS system information
-- `system_get_clipboard` - Read clipboard contents
-- `system_set_clipboard` - Set clipboard contents
-- `system_send_notification` - Send system notification
-- `system_take_screenshot` - Capture screen
-- `system_get_volume` - Get current volume level
-- `system_set_volume` - Set volume level
-- `system_get_brightness` - Get screen brightness
-- `system_set_brightness` - Set screen brightness
+| Category | Count | Satellites |
+|----------|-------|-----------|
+| **System** | 24 | System info, clipboard, notifications, screenshots... |
+| **Files** | 10 | File operations: read, write, delete, search... |
+| **Notes** | 7 | Create, read, update, delete, search notes |
+| **Reminders** | 6 | Manage reminders and lists |
+| **Calendar** | 4 | Create and manage events |
+| **Mail** | 6 | Send and read emails |
+| **Safari** | 12 | Browser automation, tabs, search |
+| **Music** | 11 | Playback control and library |
+| **Finder** | 6 | File manager operations |
+| **Contacts** | 4 | Search and retrieve contacts |
+| **WiFi** | 6 | Network management |
+| **Apps** | 8 | Application lifecycle |
 
-### File Communications
-- `file_list` - List files in directory
-- `file_read` - Read file contents
-- `file_write` - Write to file
-- `file_delete` - Delete file
-- `file_move` - Move file
-- `file_copy` - Copy file
-- `file_search` - Search files
-- `file_empty_trash` - Empty trash
-
-### App Stations
-- **Notes** - Create, read, update, delete, search notes
-- **Reminders** - Manage reminders and lists
-- **Calendar** - Create and manage events
-- **Mail** - Send and read emails
-- **Safari** - Control browser, tabs, search
-- **Music** - Control playback and library
-- **Contacts** - Search and retrieve contacts
-- **Finder** - Navigate and manage folders
-
-### Network & WiFi
-- `wifi_connect` - Connect to network
-- `wifi_disconnect` - Disconnect
-- `wifi_list` - List available networks
-- `wifi_current` - Current connection info
-
-### Application Control
-- `app_list` - List installed applications
-- `app_launch` - Launch application
-- `app_quit` - Quit application
-- `app_activate` - Bring to front
-
-[View complete satellite list](https://github.com/yourusername/orbit/docs/SATELLITES.md)
+[View complete satellite list →](docs/SATELLITES.md) | [查看完整卫星列表 →](docs/SATELLITES_CN.md)
 
 ---
 
-## 🌍 Mission Control Architecture
+## 🛡️ Safety System
 
-```mermaid
-graph TD
-    A[AI Agent Framework<br/>LangChain, OpenAI, Custom] --> B[Mission Control]
+Orbit implements a 4-tier safety system:
 
-    subgraph Mission Control
-        B1[Constellation Registry]
-        B2[Satellite Metadata]
-        B3[Export Formats]
-        B4[Mission Router]
-    end
+| Level | Description | Examples | Action |
+|-------|-------------|----------|--------|
+| **SAFE** | Read-only operations | Get info, list files | ✅ Allow |
+| **MODERATE** | Create/modify | Write file, create note | ⚠️ Confirm |
+| **DANGEROUS** | Delete operations | Delete file, empty trash | ⚠️ Confirm |
+| **CRITICAL** | System-level | System file modification | 🚫 Deny |
 
-    B --> C[Launcher]
-
-    subgraph Launcher
-        C1[AppleScript Engine]
-        C2[Result Parser]
-        C3[Error Handler]
-        C4[Shield System]
-    end
-
-    C --> D[macOS System & Apps<br/>Finder, Notes, Safari, Music, etc.]
-```
-
----
-
-## 🛡️ Shield System (Safety)
-
-Orbit implements a 4-tier safety system to protect your system:
-
-### Safety Levels
-
-| Level | Description | Auto-Allow | Confirmation |
-|-------|-------------|------------|--------------|
-| **SAFE** | Read-only operations | ✅ | ❌ |
-| **MODERATE** | Create/modify operations | ❌ | ⚠️ Suggested |
-| **DANGEROUS** | Delete operations | ❌ | ✅ Required |
-| **CRITICAL** | System-level operations | ❌ | ✅ Required + Blocklist |
-
-### Example: Configuring Safety
-
-```python
-from orbit import MissionControl, SafetyShield
-from orbit.satellites import SafetyLevel
-
-# Create shield with custom rules
-shield = SafetyShield(
-    rules={
-        SafetyLevel.SAFE: "allow",
-        SafetyLevel.MODERATE: "confirm",
-        SafetyLevel.DANGEROUS: "deny",  # Block dangerous ops
-        SafetyLevel.CRITICAL: "deny"
-    },
-    confirmation_callback=lambda tool, params: input(f"Allow {tool.name}? (y/n): ") == "y"
-)
-
-mission = MissionControl(safety_shield=shield)
-```
+[Learn more about security →](docs/SECURITY.md) | [了解安全详情 →](docs/SECURITY_CN.md)
 
 ---
 
 ## 🔗 Framework Integration
 
-### OpenAI Functions
+Orbit integrates seamlessly with popular AI frameworks:
 
+### OpenAI Functions
 ```python
-import openai
 from orbit import MissionControl
 from orbit.satellites import all_satellites
 
 mission = MissionControl()
 mission.register_constellation(all_satellites)
-
-# Export as OpenAI Functions
 functions = mission.export_openai_functions()
 
+# Use with OpenAI API
 response = openai.chat.completions.create(
     model="gpt-4",
-    messages=[{"role": "user", "content": "Create a note about my meeting"}],
-    functions=functions,
-    function_call="auto"
+    messages=[{"role": "user", "content": "What's my macOS version?"}],
+    functions=functions
 )
-
-# Execute function call
-if response.choices[0].message.function_call:
-    result = mission.execute_function_call(response.choices[0].message)
-    print(result)
 ```
 
 ### LangChain
-
 ```python
 from langchain.agents import initialize_agent, AgentType
-from langchain_openai import ChatOpenAI
 from langchain.tools import StructuredTool
 from orbit import MissionControl
 
 mission = MissionControl()
 mission.register_constellation(all_satellites)
 
-# Convert to LangChain tools
-langchain_tools = [
+tools = [
     StructuredTool.from_function(
-        func=lambda **kwargs: mission.launch(tool.name, kwargs),
-        name=tool.name,
-        description=tool.description,
+        func=lambda **kwargs: mission.launch(sat.name, kwargs),
+        name=sat.name,
+        description=sat.description
     )
-    for tool in mission.constellation.list_all()
+    for sat in mission.constellation.list_all()
 ]
 
-# Create agent
-llm = ChatOpenAI(model="gpt-4")
-agent = initialize_agent(
-    langchain_tools,
-    llm,
-    agent=AgentType.OPENAI_FUNCTIONS,
-    verbose=True
-)
-
-agent.run("Create a reminder for my meeting tomorrow at 3pm")
+agent = initialize_agent(tools, llm, agent=AgentType.OPENAI_FUNCTIONS)
 ```
 
-### Custom Agent
-
-```python
-from orbit import MissionControl
-
-mission = MissionControl()
-mission.register_constellation(all_satellites)
-
-# Simple agent loop
-def run_agent(user_prompt: str):
-    # Get LLM response (simplified)
-    llm_response = your_llm.generate(
-        prompt=user_prompt,
-        tools=mission.export_openai_functions()
-    )
-
-    # Execute tool call
-    if llm_response.function_call:
-        result = mission.execute_function_call(llm_response.function_call)
-        return result
-
-    return llm_response.text
-```
+[More integration examples →](examples/) | [更多集成示例 →](examples/)
 
 ---
 
-## 🔧 Development Status
+## 📖 Documentation Index
 
-### Current Phase: Core Framework
-- [x] Architecture design
-- [x] Safety system design
-- [x] Tool registry specification
-- [ ] Core implementation (in progress)
-- [ ] First satellite tools
+### By Language / 按语言
 
-### Roadmap
+#### English / 英文
+- **[Quick Start](docs/QUICKSTART.md)** - 5-minute tutorial
+- **[API Reference](docs/API_REFERENCE.md)** - Complete API docs
+- **[CLI Reference](docs/CLI_REFERENCE.md)** - CLI tool guide
+- **[Design Doc](docs/DESIGN.md)** - Technical architecture
+- **[Security Model](docs/SECURITY.md)** - Safety system
+- **[Contributing](docs/CONTRIBUTING.md)** - Contribution guide
 
-**Phase 1: Core Framework** (Week 1-2)
-- Satellite base class and data structures
-- Constellation registry
-- Mission launcher (AppleScript runner)
-- Shield system (safety checker)
-- Exception handling
+#### 中文 / Chinese
+- **[快速入门](docs/QUICKSTART_CN.md)** - 5分钟上手
+- **[API 参考](docs/API_REFERENCE_CN.md)** - 完整API文档
+- **[设计文档](docs/DESIGN_CN.md)** - 技术架构
+- **[安全模型](docs/SECURITY_CN.md)** - 安全系统
+- **[贡献指南](docs/CONTRIBUTING_CN.md)** - 贡献指南
 
-**Phase 2: System Telemetry** (Week 3)
-- System info, clipboard, notifications
-- Screenshots, volume, brightness
+### By Topic / 按主题
 
-**Phase 3: File Communications** (Week 4)
-- File operations (list, read, write, delete, move, copy)
-- Search and trash
+#### Getting Started / 入门
+- [Quick Start Guide](docs/QUICKSTART.md) | [快速入门](docs/QUICKSTART_CN.md)
+- [CLI Quick Start](docs/CLI_QUICKSTART.md) | [CLI 快速入门](docs/CLI_QUICKSTART.md)
+- [API Reference](docs/API_REFERENCE.md) | [API 参考文档](docs/API_REFERENCE_CN.md)
 
-**Phase 4: App Stations** (Week 5-6)
-- Notes, Reminders, Calendar
-- Mail, Safari, Music
+#### Reference / 参考
+- [Satellites Reference](docs/SATELLITES.md) | [卫星参考手册](docs/SATELLITES_CN.md)
+- [Terminology](docs/TERMINOLOGY.md) | [术语表](docs/TERMINOLOGY_CN.md)
+- [Test Coverage](docs/TEST_COVERAGE.md) | [测试覆盖率](docs/TEST_COVERAGE.md)
 
-**Phase 5: Advanced Satellites** (Week 7-8)
-- Finder operations
-- Application control
-- Contacts, WiFi
+#### Development / 开发
+- [Design Document](docs/DESIGN.md) | [设计文档](docs/DESIGN_CN.md)
+- [Security Model](docs/SECURITY.md) | [安全模型](docs/SECURITY_CN.md)
+- [Contributing Guide](docs/CONTRIBUTING.md) | [贡献指南](docs/CONTRIBUTING_CN.md)
+- [Release Checklist](docs/RELEASE_CHECKLIST.md) | [发布检查清单](docs/RELEASE_CHECKLIST.md)
 
-**Phase 6: Integration & Docs** (Week 9-10)
-- Framework integrations
-- Examples and tutorials
-- API documentation
+[View all documentation →](docs/INDEX.md) | [查看所有文档 →](docs/INDEX_CN.md)
+
+---
+
+## 📊 Project Statistics
+
+- **Version:** 1.0.0
+- **Release Date:** January 27, 2026
+- **Total Satellites:** 104
+- **Categories:** 12
+- **Python Code:** 5,069 lines
+- **Test Cases:** 272
+- **Test Coverage:** 65% code / 95% functionality
+- **Documentation Files:** 23 markdown files (bilingual)
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](https://github.com/yourusername/orbit/docs/CONTRIBUTING.md) for details.
+Contributions are welcome! Please read our [Contributing Guide](docs/CONTRIBUTING.md) | [贡献指南](docs/CONTRIBUTING_CN.md).
 
-### Development Setup
+### Development Setup / 开发设置
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/orbit.git
+# Clone repository
+git clone https://github.com/xiaoxiath/orbit.git
 cd orbit
 
-# Install in development mode
+# Install dependencies
 pip install -e ".[dev]"
 
 # Run tests
 pytest
 
-# Run linting
-ruff check .
-black --check .
+# Run with coverage
+pytest --cov=orbit --cov-report=html
 ```
 
 ---
 
 ## 📄 License
 
-MIT License - see [LICENSE](https://github.com/yourusername/orbit/LICENSE) for details.
+MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-## 🌟 Acknowledgments
+## 🙏 Acknowledgments
 
 Built with ❤️ for the macOS automation community.
 
-Orbit: Your AI's bridge to macOS. 🛸
+**Orbit: Your AI's Bridge to macOS** 🛸
+
+---
+
+## 🔗 Quick Links
+
+### Documentation / 文档
+- 📖 [All Documentation Index](docs/INDEX.md) | [文档索引](docs/INDEX_CN.md)
+- 🚀 [Quick Start](docs/QUICKSTART.md) | [快速入门](docs/QUICKSTART_CN.md)
+- 📚 [API Reference](docs/API_REFERENCE.md) | [API 参考](docs/API_REFERENCE_CN.md)
+- 🛡️ [Security Model](docs/SECURITY.md) | [安全模型](docs/SECURITY_CN.md)
+
+### Community / 社区
+- 💻 [GitHub Repository](https://github.com/xiaoxiath/orbit)
+- 🐛 [Issue Tracker](https://github.com/xiaoxiath/orbit/issues)
+- 💬 [Discussions](https://github.com/xiaoxiath/orbit/discussions)
+
+### Tools / 工具
+- 🖥️ [CLI Tool](docs/CLI_REFERENCE.md) | [命令行工具](docs/CLI_REFERENCE.md)
+- 📋 [Satellites List](docs/SATELLITES.md) | [卫星列表](docs/SATELLITES_CN.md)
+- 🎯 [Test Coverage](docs/TEST_COVERAGE.md) | [测试覆盖率](docs/TEST_COVERAGE.md)
+
+---
+
+**Version:** 1.0.0 | **Last Updated:** 2026-01-27 | **Status:** ✅ Production Ready

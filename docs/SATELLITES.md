@@ -413,28 +413,28 @@ mission.launch("app_quit", {"name": "Safari"})
 
 | Category | Satellite Count |
 |----------|----------------|
-| System Telemetry | 9 |
-| File Communications | 8 |
+| System Telemetry | 24 |
+| File Communications | 10 |
 | Notes | 7 |
-| Reminders | 5 |
+| Reminders | 6 |
 | Calendar | 4 |
-| Mail | 4 |
-| Safari | 5 |
-| Music | 6 |
-| Finder | 4 |
-| Contacts | 2 |
-| WiFi | 4 |
-| Application Control | 4 |
-| **Total** | **68+** |
+| Mail | 6 |
+| Safari | 12 |
+| Music | 11 |
+| Finder | 6 |
+| Contacts | 4 |
+| WiFi Management | 6 |
+| Application Control | 8 |
+| **Total** | **104** |
 
 ### By Safety Level
 
 | Level | Count | Percentage |
 |-------|-------|------------|
-| SAFE | 35 | 51% |
-| MODERATE | 28 | 41% |
-| DANGEROUS | 6 | 9% |
-| CRITICAL | 0 | 0% |
+| SAFE | 51 | 49% |
+| MODERATE | 44 | 42% |
+| DANGEROUS | 7 | 7% |
+| CRITICAL | 2 | 2% |
 
 ---
 
@@ -474,6 +474,6 @@ Examples:
 
 **Satellites Reference Version:** 1.0.0
 **Last Updated:** 2026-01-27
-**Total Satellites:** 68+
+**Total Satellites:** 104
 
 🛸 Explore the constellation!
