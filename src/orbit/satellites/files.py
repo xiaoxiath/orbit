@@ -35,12 +35,15 @@ file_list = Satellite(
     ],
     safety_level=SafetyLevel.SAFE,
     applescript_template="""
-    set folderPath to POSIX path of "{{ path }}"
-    set fileList to {}
+    set folderPath to POSIX path of (POSIX file "{{ path }}")
+    set recursiveFlag to {{ "true" if recursive else "false" }}
+    set includeHiddenFlag to {{ "true" if include_hidden else "false" }}
 
-    tell application "Finder"
+    tell application "System Events"
+        set fileList to {}
         set folderRef to folder folderPath
-        if {{ recursive|lower }} then
+
+        if recursiveFlag then
             set fileRefs to every file of entire contents of folderRef
         else
             set fileRefs to every file of folderRef
@@ -49,17 +52,17 @@ file_list = Satellite(
         repeat with fileRef in fileRefs
             try
                 set fileName to name of fileRef
-                if {{ include_hidden|lower }} or (fileName does not start with ".") then
-                    set filePath to POSIX path of (fileRef as alias)
-                    set fileType to kind of (info for fileRef)
-                    set fileSize to size of (info for fileRef)
+                if includeHiddenFlag or (fileName does not start with ".") then
+                    set filePath to POSIX path of fileRef
+                    set fileType to kind of fileRef
+                    set fileSize to size of fileRef
                     set end of fileList to (fileName & "|" & filePath & "|" & fileType & "|" & (fileSize as string))
                 end if
             end try
         end repeat
     end tell
 
-    return (my_list(fileList)) as string
+    return fileList as string
     """,
     result_parser=lambda x: json.dumps([dict(zip(["name", "path", "type", "size"], item.split("|"))) for item in x.split(",")]),
     examples=[

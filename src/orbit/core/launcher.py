@@ -71,7 +71,7 @@ class Launcher:
         last_error = None
         for attempt in range(self.max_retries):
             try:
-                result = self._execute_applescript(script)
+                result = self._execute_applescript(script, satellite)
                 break
             except AppleScriptError as e:
                 last_error = e
@@ -118,11 +118,12 @@ class Launcher:
         except Exception as e:
             raise TemplateRenderingError(f"Template rendering failed: {e}")
 
-    def _execute_applescript(self, script: str) -> str:
+    def _execute_applescript(self, script: str, satellite: Satellite) -> str:
         """Execute AppleScript via osascript.
 
         Args:
             script: AppleScript to execute
+            satellite: The satellite being executed (for error messages)
 
         Returns:
             Script output
