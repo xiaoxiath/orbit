@@ -35,7 +35,7 @@ file_list = Satellite(
     ],
     safety_level=SafetyLevel.SAFE,
     applescript_template="""
-    set folderPath to POSIX path of (POSIX file "{{ path }}")
+    set folderPath to "{{ path }}"
     set recursiveFlag to {{ "true" if recursive else "false" }}
     set includeHiddenFlag to {{ "true" if include_hidden else "false" }}
 
@@ -56,7 +56,11 @@ file_list = Satellite(
                     set filePath to POSIX path of fileRef
                     set fileType to kind of fileRef
                     set fileSize to size of fileRef
-                    set end of fileList to (fileName & "|" & filePath & "|" & fileType & "|" & (fileSize as string))
+                    if (count of fileList) = 0 then
+                        set end of fileList to (fileName & "|" & filePath & "|" & fileType & "|" & (fileSize as string))
+                    else
+                        set end of fileList to "," & (fileName & "|" & filePath & "|" & fileType & "|" & (fileSize as string))
+                    end if
                 end if
             end try
         end repeat
