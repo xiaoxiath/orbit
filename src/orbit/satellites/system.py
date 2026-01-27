@@ -12,17 +12,12 @@ system_get_info = Satellite(
     parameters=[],
     safety_level=SafetyLevel.SAFE,
     applescript_template="""
-    tell application "System Events"
-        set systemVersion to system version
-        set hostName to host name
-        set userName to name of current user
-    end tell
+    set systemInfo to do shell script "sw_vers -productVersion"
+    set hostInfo to do shell script "hostname"
+    set userInfo to do shell script "whoami"
+    set archInfo to do shell script "uname -m"
 
-    tell application "Finder"
-        set appleArchitecture to architecture of (get system info)
-    end tell
-
-    return systemVersion & "|" & hostName & "|" & userName & "|" & appleArchitecture
+    return systemInfo & "|" & hostInfo & "|" & userInfo & "|" & archInfo
     """,
     result_parser=DelimitedResultParser(
         delimiter="|", field_names=["version", "hostname", "username", "architecture"]
