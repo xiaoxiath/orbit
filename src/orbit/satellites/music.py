@@ -285,7 +285,11 @@ music_get_playlists = Satellite(
         repeat with currentPlaylist in allPlaylists
             set playlistName = name of currentPlaylist
             set trackCount = count of tracks in currentPlaylist
-            set end of playlistList to (playlistName & "|" & (trackCount as string))
+            if (count of playlistList) = 0 then
+                set end of playlistList to (playlistName & "|" & (trackCount as string))
+            else
+                set end of playlistList to "," & (playlistName & "|" & (trackCount as string))
+            end if
         end repeat
     end tell
 

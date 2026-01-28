@@ -19,12 +19,23 @@ calendar_list_calendars = Satellite(
 
         repeat with currentCalendar in allCalendars
             set calendarName to name of currentCalendar
-            set isWritable to writable of currentCalendar as string
-            set isSubscribed to subscribed of currentCalendar as string
-            if (count of calendarList) = 0 then
-                set end of calendarList to (calendarName & "|" & isWritable & "|" & isSubscribed)
+            set isWritable to writable of currentCalendar
+            try
+                set isSubscribed to subscribed of currentCalendar
+            on error
+                set isSubscribed to missing value
+            end try
+
+            if isSubscribed is missing value then
+                set isSubscribed to "false"
             else
-                set end of calendarList to "," & (calendarName & "|" & isWritable & "|" & isSubscribed)
+                set isSubscribed to isSubscribed as string
+            end if
+
+            if (count of calendarList) = 0 then
+                set end of calendarList to (calendarName & "|" & (isWritable as string) & "|" & isSubscribed)
+            else
+                set end of calendarList to "," & (calendarName & "|" & (isWritable as string) & "|" & isSubscribed)
             end if
         end repeat
     end tell
