@@ -245,12 +245,16 @@ music_search = Satellite(
         repeat with currentTrack in allTracks
             set trackName to name of currentTrack
             if trackName contains "{{ query }}" then
-                set end of trackList to (trackName & "|" & (album of currentTrack) & "|" & (artist of currentTrack))
+                if (count of trackList) = 0 then
+                    set end of trackList to (trackName & "|" & (album of currentTrack) & "|" & (artist of currentTrack))
+                else
+                    set end of trackList to "," & (trackName & "|" & (album of currentTrack) & "|" & (artist of currentTrack))
+                end if
             end if
         end repeat
     end tell
 
-    return my list(trackList)
+    return trackList as string
     """,
     result_parser=lambda x: [dict(zip(["name", "album", "artist"], item.split("|", 2))) for item in x.split(",")] if x else [],
     examples=[
@@ -285,7 +289,7 @@ music_get_playlists = Satellite(
         end repeat
     end tell
 
-    return my list(playlistList)
+    return playlistList as string
     """,
     result_parser=lambda x: [dict(zip(["name", "count"], item.split("|"))) for item in x.split(",")] if x else [],
     examples=[

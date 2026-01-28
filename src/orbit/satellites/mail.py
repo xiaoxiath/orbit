@@ -106,11 +106,15 @@ mail_list_inbox = Satellite(
             set messageDate = date received of currentMessage
             set messageRead (read status of currentMessage as string)
 
-            set end of inboxMessages to (messageSubject & "|" & messageSender & "|" & messageDate & "|" & messageRead)
+            if (count of inboxMessages) = 0 then
+                set end of inboxMessages to (messageSubject & "|" & messageSender & "|" & messageDate & "|" & messageRead)
+            else
+                set end of inboxMessages to "," & (messageSubject & "|" & messageSender & "|" & messageDate & "|" & messageRead)
+            end if
         end repeat
     end tell
 
-    return my list(inboxMessages)
+    return inboxMessages as string
     """,
     result_parser=lambda x: [dict(zip(["subject", "sender", "date", "read"], item.split("|", 3))) for item in x.split(",")] if x else [],
     examples=[

@@ -30,12 +30,16 @@ notes_list = Satellite(
                 set noteName to name of currentNote
                 set noteBody to body of currentNote
                 set noteId to id of currentNote
-                set end of noteList to (noteName & "|" & noteBody & "|" & noteId)
+                if (count of noteList) = 0 then
+                    set end of noteList to (noteName & "|" & noteBody & "|" & noteId)
+                else
+                    set end of noteList to "," & (noteName & "|" & noteBody & "|" & noteId)
+                end if
             end repeat
         end if
     end tell
 
-    return my list(noteList)
+    return noteList as string
     """,
     result_parser=lambda x: [dict(zip(["name", "body", "id"], note.split("|", 2))) for note in x.split(",")],
     examples=[
@@ -276,12 +280,16 @@ notes_search = Satellite(
             set noteBody to body of currentNote
 
             if noteName contains "{{ query }}" or noteBody contains "{{ query }}" then
-                set end of results to (noteName & "|" & (name of container of currentNote))
+                if (count of results) = 0 then
+                    set end of results to (noteName & "|" & (name of container of currentNote))
+                else
+                    set end of results to "," & (noteName & "|" & (name of container of currentNote))
+                end if
             end if
         end repeat
     end tell
 
-    return my list(results)
+    return results as string
     """,
     result_parser=lambda x: [dict(zip(["name", "folder"], item.split("|"))) for item in x.split(",")],
     examples=[

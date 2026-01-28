@@ -37,12 +37,16 @@ contacts_search = Satellite(
                 set personPhone2 to personPhone2 & ""
                 set personCompany to personCompany & ""
 
-                set end of results to (personName & "|" & personEmail & "|" & personPhone1 & "|" & personPhone2 & "|" & personCompany)
+                if (count of results) = 0 then
+                    set end of results to (personName & "|" & personEmail & "|" & personPhone1 & "|" & personPhone2 & "|" & personCompany)
+                else
+                    set end of results to "," & (personName & "|" & personEmail & "|" & personPhone1 & "|" & personPhone2 & "|" & personCompany)
+                end if
             end if
         end repeat
     end tell
 
-    return my list(results)
+    return results as string
     """,
     result_parser=lambda x: [dict(zip(["name", "email", "phone1", "phone2", "company"], item.split("|", 4))) for item in x.split(",")] if x else [],
     examples=[

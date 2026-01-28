@@ -105,12 +105,16 @@ safari_list_tabs = Satellite(
                 set tabName to name of currentTab
                 set tabURL to URL of currentTab
 
-                set end of tabList to (tabName & "|" & tabURL)
+                if (count of tabList) = 0 then
+                    set end of tabList to (tabName & "|" & tabURL)
+                else
+                    set end of tabList to "," & (tabName & "|" & tabURL)
+                end if
             end repeat
         end repeat
     end tell
 
-    return my list(tabList)
+    return tabList as string
     """,
     result_parser=lambda x: [dict(zip(["name", "url"], item.split("|", 1))) for item in x.split(",")] if x else [],
     examples=[

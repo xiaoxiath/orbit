@@ -21,11 +21,15 @@ calendar_list_calendars = Satellite(
             set calendarName to name of currentCalendar
             set isWritable to writable of currentCalendar as string
             set isSubscribed to subscribed of currentCalendar as string
-            set end of calendarList to (calendarName & "|" & isWritable & "|" & isSubscribed)
+            if (count of calendarList) = 0 then
+                set end of calendarList to (calendarName & "|" & isWritable & "|" & isSubscribed)
+            else
+                set end of calendarList to "," & (calendarName & "|" & isWritable & "|" & isSubscribed)
+            end if
         end repeat
     end tell
 
-    return my list(calendarList)
+    return calendarList as string
     """,
     result_parser=lambda x: [dict(zip(["name", "writable", "subscribed"], item.split("|"))) for item in x.split(",")] if x else [],
     examples=[
@@ -95,11 +99,15 @@ calendar_get_events = Satellite(
             set eventLocation to eventLocation & ""
             set eventStatus to eventStatus & ""
 
-            set end of eventList to (eventName & "|" & (eventStart as string) & "|" & (eventEnd as string) & "|" & eventLocation & "|" & eventStatus & "|" & eventCalendar)
+            if (count of eventList) = 0 then
+                set end of eventList to (eventName & "|" & (eventStart as string) & "|" & (eventEnd as string) & "|" & eventLocation & "|" & eventStatus & "|" & eventCalendar)
+            else
+                set end of eventList to "," & (eventName & "|" & (eventStart as string) & "|" & (eventEnd as string) & "|" & eventLocation & "|" & eventStatus & "|" & eventCalendar)
+            end if
         end repeat
     end tell
 
-    return my list(eventList)
+    return eventList as string
     """,
     result_parser=lambda x: [dict(zip(["summary", "start", "end", "location", "status", "calendar"], item.split("|", 5))) for item in x.split(",")] if x else [],
     examples=[

@@ -50,11 +50,15 @@ reminders_list = Satellite(
             set reminderDue to due date of currentReminder
             set isCompleted to completed of currentReminder as string
             set reminderId to id of currentReminder
-            set end of reminderList to (reminderName & "|" & reminderDue & "|" & isCompleted & "|" & reminderId)
+            if (count of reminderList) = 0 then
+                set end of reminderList to (reminderName & "|" & reminderDue & "|" & isCompleted & "|" & reminderId)
+            else
+                set end of reminderList to "," & (reminderName & "|" & reminderDue & "|" & isCompleted & "|" & reminderId)
+            end if
         end repeat
     end tell
 
-    return my list(reminderList)
+    return reminderList as string
     """,
     result_parser=lambda x: [dict(zip(["name", "due_date", "completed", "id"], item.split("|", 3))) for item in x.split(",")] if x else [],
     examples=[
@@ -246,11 +250,15 @@ reminders_list_lists = Satellite(
         repeat with currentList in allLists
             set listName to name of currentList
             set listCount to count of reminders of currentList
-            set end of listList to (listName & "|" & (listCount as string))
+            if (count of listList) = 0 then
+                set end of listList to (listName & "|" & (listCount as string))
+            else
+                set end of listList to "," & (listName & "|" & (listCount as string))
+            end if
         end repeat
     end tell
 
-    return my list(listList)
+    return listList as string
     """,
     result_parser=lambda x: [dict(zip(["name", "count"], item.split("|"))) for item in x.split(",")] if x else [],
     examples=[
