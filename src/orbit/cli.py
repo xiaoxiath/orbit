@@ -103,7 +103,7 @@ def format_satellite_table(satellites, show_details: bool = False):
 
 
 @click.group(invoke_without_command=True)
-@click.version_option(version="1.0.3", prog_name="orbit")
+@click.version_option(version="1.0.4", prog_name="orbit")
 @click.pass_context
 def cli(ctx):
     """
@@ -125,15 +125,15 @@ def cli(ctx):
       orbit <command> --help
     """
     if ctx.invoked_subcommand is None:
-        ctx.invoke(list)
+        ctx.invoke(list_satellites)
 
 
-@cli.command()
+@cli.command(name='list')
 @click.option('--category', '-c', help='Filter by category')
 @click.option('--safety', '-s', type=click.Choice(['safe', 'moderate', 'dangerous', 'critical']), help='Filter by safety level')
 @click.option('--details', '-d', is_flag=True, help='Show detailed information')
 @click.option('--count', '-n', default=20, help='Number of satellites to show (default: 20)')
-def list(category, safety, details, count):
+def list_satellites(category, safety, details, count):
     """
     List all available satellites.
 
@@ -212,7 +212,8 @@ def search(query, category, details):
 @click.argument('parameters', nargs=-1, type=click.UNPROCESSED)
 @click.option('--bypass-shield', is_flag=True, help='Bypass safety checks (not recommended)')
 @click.option('--timeout', '-t', default=30, help='Execution timeout in seconds')
-def run(satellite_name, parameters, bypass_shield, timeout):
+@click.option('--raw', '-r', is_flag=True, help='Output raw JSON without formatting')
+def run(satellite_name, parameters, bypass_shield, timeout, raw):
     """
     Run a satellite with parameters.
 
@@ -246,7 +247,8 @@ def run(satellite_name, parameters, bypass_shield, timeout):
             # Positional
             params = {"_args": list(parameters)}
 
-    click.echo(colorize(f"\n🚀 Running: {satellite_name}\n", Colors.BOLD))
+    if not raw:
+        click.echo(colorize(f"\n🚀 Running: {satellite_name}\n", Colors.BOLD))
 
     try:
         result = mission.launch(
@@ -256,15 +258,17 @@ def run(satellite_name, parameters, bypass_shield, timeout):
         )
 
         # Display result
-        click.echo(colorize("✅ Success!\n", Colors.OKGREEN))
+        if not raw:
+            click.echo(colorize("✅ Success!\n", Colors.OKGREEN))
         try:
             if isinstance(result, dict):
-                click.echo(json.dumps(result, indent=2, ensure_ascii=False))
+                click.echo(json.dumps(result, indent=2 if not raw else None, ensure_ascii=False))
             elif isinstance(result, list):
-                for item in result:
-                    click.echo(f"  - {item}")
+                # Use JSON for lists to ensure proper format
+                click.echo(json.dumps(result, indent=2 if not raw else None, ensure_ascii=False))
             elif result is None or result == "":
-                click.echo(colorize("No output", Colors.OKCYAN))
+                if not raw:
+                    click.echo(colorize("No output", Colors.OKCYAN))
             else:
                 click.echo(str(result))
         except Exception as display_error:

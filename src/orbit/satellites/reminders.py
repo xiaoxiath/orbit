@@ -94,9 +94,8 @@ reminders_create = Satellite(
         SatelliteParameter(
             name="list_name",
             type="string",
-            description="List name (default: first list)",
-            required=False,
-            default="Reminders"
+            description="List name (default: first list if not specified)",
+            required=False
         ),
         SatelliteParameter(
             name="priority",
@@ -110,14 +109,18 @@ reminders_create = Satellite(
     safety_level=SafetyLevel.MODERATE,
     applescript_template="""
     tell application "Reminders"
+        {% if list_name %}
         set targetList to first list whose name is "{{ list_name }}"
+        {% else %}
+        set targetList to first list
+        {% endif %}
 
         tell targetList
             set newReminder to make new reminder with properties {name:"{{ name }}"}
             {% if due_date %}
             set due date of newReminder to date "{{ due_date }}"
             {% endif %}
-            {% if priority > 0 %}
+            {% if priority %}
             set priority of newReminder to {{ priority }}
             {% endif %}
         end tell

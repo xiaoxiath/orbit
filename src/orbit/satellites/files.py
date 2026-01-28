@@ -103,14 +103,14 @@ file_read = Satellite(
     ],
     safety_level=SafetyLevel.SAFE,
     applescript_template="""
-    set filePath to POSIX path of "{{ path }}"
+    set filePath to "{{ path }}"
 
     tell application "System Events"
         try
-            set fileContent to read (file filePath as alias) using encoding "{{ encoding }}"
+            set fileContent to do shell script "cat " & quoted form of filePath
             return fileContent
-        on error
-            return "Error: " & (error number as string)
+        on error errMsg
+            return "Error: " & errMsg
         end try
     end tell
     """,
@@ -157,17 +157,16 @@ file_write = Satellite(
     ],
     safety_level=SafetyLevel.MODERATE,
     applescript_template="""
-    set filePath to POSIX path of "{{ path }}"
-    set fileContent to "{{ content }}"
+    set filePath to POSIX path of (POSIX file "{{ path }}")
+    set contentText to "{{ content }}"
 
     tell application "System Events"
         try
-            set fileRef to open for access (filePath as alias) with write permission
             if {{ overwrite|lower }} then
-                set eof of fileRef to 0
+                do shell script "echo " & quoted form of contentText & " > " & quoted form of filePath
+            else
+                do shell script "echo " & quoted form of contentText & " >> " & quoted form of filePath
             end if
-            write fileContent to fileRef as «class utf8» using encoding "{{ encoding }}"
-            close access fileRef
             return "success"
         on error errMsg
             return "Error: " & errMsg

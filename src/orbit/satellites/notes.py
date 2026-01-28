@@ -13,16 +13,19 @@ notes_list = Satellite(
         SatelliteParameter(
             name="folder",
             type="string",
-            description="Folder name (default: first folder)",
-            required=False,
-            default="Notes"
+            description="Folder name (default: first folder if not specified)",
+            required=False
         )
     ],
     safety_level=SafetyLevel.SAFE,
     applescript_template="""
     tell application "Notes"
         set noteList to {}
+        {% if folder %}
         set targetFolder to first folder whose name is "{{ folder }}"
+        {% else %}
+        set targetFolder to first folder
+        {% endif %}
 
         if targetFolder exists then
             set allNotes to every note in targetFolder
@@ -127,15 +130,18 @@ notes_create = Satellite(
         SatelliteParameter(
             name="folder",
             type="string",
-            description="Folder name (default: first folder)",
-            required=False,
-            default="Notes"
+            description="Folder name (default: first folder if not specified)",
+            required=False
         )
     ],
     safety_level=SafetyLevel.MODERATE,
     applescript_template="""
     tell application "Notes"
+        {% if folder %}
         set targetFolder to first folder whose name is "{{ folder }}"
+        {% else %}
+        set targetFolder to first folder
+        {% endif %}
         tell targetFolder
             make new note with properties {name:"{{ title }}", body:"{{ body }}"}
         end tell
@@ -175,15 +181,18 @@ notes_update = Satellite(
         SatelliteParameter(
             name="folder",
             type="string",
-            description="Folder name (default: first folder)",
-            required=False,
-            default="Notes"
+            description="Folder name (default: first folder if not specified)",
+            required=False
         )
     ],
     safety_level=SafetyLevel.MODERATE,
     applescript_template="""
     tell application "Notes"
+        {% if folder %}
         set targetFolder to first folder whose name is "{{ folder }}"
+        {% else %}
+        set targetFolder to first folder
+        {% endif %}
         set targetNote to first note of targetFolder whose name is "{{ name }}"
 
         if targetNote exists then
@@ -217,16 +226,19 @@ notes_delete = Satellite(
         SatelliteParameter(
             name="folder",
             type="string",
-            description="Folder name (default: first folder)",
-            required=False,
-            default="Notes"
+            description="Folder name (default: first folder if not specified)",
+            required=False
         )
     ],
     safety_level=SafetyLevel.DANGEROUS,
     applescript_template="""
     tell application "Notes"
+        {% if folder %}
         set targetFolder to first folder whose name is "{{ folder }}"
-        set targetNote to first note of targetFolder whose name is "{{ name }}"
+        {% else %}
+        set targetFolder to first folder
+        {% endif %}
+        set targetNote to first note of targetFolder whose name is "{{ name }}""
 
         if targetNote exists then
             delete targetNote
@@ -318,11 +330,15 @@ notes_list_folders = Satellite(
 
         repeat with currentFolder in allFolders
             set folderName to name of currentFolder
-            set end of folderList to folderName
+            if (count of folderList) = 0 then
+                set end of folderList to folderName
+            else
+                set end of folderList to "," & folderName
+            end if
         end repeat
     end tell
 
-    return my list(folderList)
+    return folderList as string
     """,
     result_parser=lambda x: x.split(",") if x else [],
     examples=[

@@ -82,9 +82,11 @@ calendar_get_events = Satellite(
     ],
     safety_level=SafetyLevel.SAFE,
     applescript_template="""
-    set startDate to date "{{ start_date }}"
+    -- Parse date string in a locale-independent way
+    set startDate to parseISODate("{{ start_date }}")
+
     {% if end_date %}
-    set endDate to date "{{ end_date }}"
+    set endDate to parseISODate("{{ end_date }}")
     {% else %}
     set endDate to startDate + (7 * days)
     {% endif %}
@@ -94,31 +96,66 @@ calendar_get_events = Satellite(
 
         {% if calendar %}
         set targetCalendar to first calendar whose name is "{{ calendar }}"
-        set allEvents to every event of targetCalendar where its start date is greater than or equal to startDate and its start date is less than or equal to endDate
+        set allCalendars to {targetCalendar}
         {% else %}
-        set allEvents to every event where its start date is greater than or equal to startDate and its start date is less than or equal to endDate
+        set allCalendars to every calendar
         {% endif %}
 
-        repeat with currentEvent in allEvents
-            set eventName to summary of currentEvent
-            set eventStart to start date of currentEvent
-            set eventEnd to end date of currentEvent
-            set eventLocation to location of currentEvent
-            set eventStatus to status of currentEvent
-            set eventCalendar to name of calendar of currentEvent
+        repeat with currentCalendar in allCalendars
+            set allEvents to every event of currentCalendar
 
-            set eventLocation to eventLocation & ""
-            set eventStatus to eventStatus & ""
+            repeat with currentEvent in allEvents
+                set eventStart to start date of currentEvent
 
-            if (count of eventList) = 0 then
-                set end of eventList to (eventName & "|" & (eventStart as string) & "|" & (eventEnd as string) & "|" & eventLocation & "|" & eventStatus & "|" & eventCalendar)
-            else
-                set end of eventList to "," & (eventName & "|" & (eventStart as string) & "|" & (eventEnd as string) & "|" & eventLocation & "|" & eventStatus & "|" & eventCalendar)
-            end if
+                -- Manual date comparison (more reliable)
+                if (eventStart is greater than or equal to startDate) and (eventStart is less than or equal to endDate) then
+                    set eventName to summary of currentEvent
+                    set eventEnd to end date of currentEvent
+                    set eventLocation to location of currentEvent
+                    set eventStatus to status of currentEvent
+
+                    -- Get calendar name with error handling
+                    try
+                        set eventCalendar to name of calendar of currentEvent
+                    on error
+                        set eventCalendar to name of currentCalendar
+                    end try
+
+                    set eventLocation to eventLocation & ""
+                    set eventStatus to eventStatus & ""
+
+                    if (count of eventList) = 0 then
+                        set end of eventList to (eventName & "|" & (eventStart as string) & "|" & (eventEnd as string) & "|" & eventLocation & "|" & eventStatus & "|" & eventCalendar)
+                    else
+                        set end of eventList to "," & (eventName & "|" & (eventStart as string) & "|" & (eventEnd as string) & "|" & eventLocation & "|" & eventStatus & "|" & eventCalendar)
+                    end if
+                end if
+            end repeat
         end repeat
     end tell
 
     return eventList as string
+
+    on parseISODate(isoDate)
+        -- Parse YYYY-MM-DD format and create a date object
+        -- This method uses current date and modifies it, which is more reliable
+        set savedDelimiters to AppleScript's text item delimiters
+        set AppleScript's text item delimiters to "-"
+        set dateParts to text items of isoDate
+        set AppleScript's text item delimiters to savedDelimiters
+
+        set y to item 1 of dateParts as integer
+        set m to item 2 of dateParts as integer
+        set d to item 3 of dateParts as integer
+
+        set newDate to current date
+        set newDate's year to y
+        set newDate's month to m
+        set newDate's day to d
+        set newDate's time to 0
+
+        return newDate
+    end parseISODate
     """,
     result_parser=lambda x: [dict(zip(["summary", "start", "end", "location", "status", "calendar"], item.split("|", 5))) for item in x.split(",")] if x else [],
     examples=[
@@ -185,6 +222,10 @@ calendar_create_event = Satellite(
     ],
     safety_level=SafetyLevel.MODERATE,
     applescript_template="""
+    -- Parse date strings in a locale-independent way
+    set startDate to parseDateTime("{{ start_date }}")
+    set endDate to parseDateTime("{{ end_date }}")
+
     tell application "Calendar"
         {% if calendar %}
         set targetCalendar to first calendar whose name is "{{ calendar }}"
@@ -193,17 +234,55 @@ calendar_create_event = Satellite(
         {% endif %}
 
         tell targetCalendar
-            make new event with properties {summary:"{{ summary }}", start date:date "{{ start_date }}", end date:date "{{ end_date }}"}
+            set newEvent to make new event with properties {summary:"{{ summary }}", start date:startDate, end date:endDate}
             {% if location %}
-            set location of result to "{{ location }}"
+            set location of newEvent to "{{ location }}"
             {% endif %}
             {% if description %}
-            set description of result to "{{ description }}"
+            set description of newEvent to "{{ description }}"
             {% endif %}
         end tell
 
         return "success"
     end tell
+
+    on parseDateTime(dateTimeStr)
+        -- Parse YYYY-MM-DD HH:MM format and create a date object
+        set savedDelimiters to AppleScript's text item delimiters
+        set AppleScript's text item delimiters to " "
+        set dateTimeParts to text items of dateTimeStr
+        set AppleScript's text item delimiters to savedDelimiters
+
+        set datePart to item 1 of dateTimeParts
+        set timePart to item 2 of dateTimeParts
+
+        -- Parse date
+        set AppleScript's text item delimiters to "-"
+        set dateParts to text items of datePart
+        set AppleScript's text item delimiters to savedDelimiters
+
+        set y to item 1 of dateParts as integer
+        set m to item 2 of dateParts as integer
+        set d to item 3 of dateParts as integer
+
+        -- Parse time
+        set AppleScript's text item delimiters to ":"
+        set timeParts to text items of timePart
+        set AppleScript's text item delimiters to savedDelimiters
+
+        set hr to item 1 of timeParts as integer
+        set mn to item 2 of timeParts as integer
+
+        set newDate to current date
+        set newDate's year to y
+        set newDate's month to m
+        set newDate's day to d
+        set newDate's hours to hr
+        set newDate's minutes to mn
+        set newDate's seconds to 0
+
+        return newDate
+    end parseDateTime
     """,
     examples=[
         {
@@ -239,16 +318,80 @@ calendar_delete_event = Satellite(
     ],
     safety_level=SafetyLevel.DANGEROUS,
     applescript_template="""
-    tell application "Calendar"
-        set targetEvent to first event where its summary is "{{ summary }}" and its start date is date "{{ start_date }}"
+    -- Parse date string in a locale-independent way
+    set startDate to parseDateTime("{{ start_date }}")
 
-        if targetEvent exists then
+    tell application "Calendar"
+        set targetEvent to missing value
+        set allCalendars to every calendar
+
+        repeat with currentCalendar in allCalendars
+            set allEvents to every event of currentCalendar
+
+            repeat with currentEvent in allEvents
+                set eventName to summary of currentEvent
+                set eventStart to start date of currentEvent
+
+                -- Compare event name and start date (within 1 minute tolerance)
+                if eventName is "{{ summary }}" then
+                    set timeDiff to (eventStart - startDate)
+                    if (timeDiff > -60) and (timeDiff < 60) then
+                        set targetEvent to currentEvent
+                        exit repeat
+                    end if
+                end if
+            end repeat
+
+            if targetEvent is not missing value then
+                exit repeat
+            end if
+        end repeat
+
+        if targetEvent is not missing value then
             delete targetEvent
             return "success"
         else
             return "Error: Event not found"
         end if
     end tell
+
+    on parseDateTime(dateTimeStr)
+        -- Parse YYYY-MM-DD HH:MM format and create a date object
+        set savedDelimiters to AppleScript's text item delimiters
+        set AppleScript's text item delimiters to " "
+        set dateTimeParts to text items of dateTimeStr
+        set AppleScript's text item delimiters to savedDelimiters
+
+        set datePart to item 1 of dateTimeParts
+        set timePart to item 2 of dateTimeParts
+
+        -- Parse date
+        set AppleScript's text item delimiters to "-"
+        set dateParts to text items of datePart
+        set AppleScript's text item delimiters to savedDelimiters
+
+        set y to item 1 of dateParts as integer
+        set m to item 2 of dateParts as integer
+        set d to item 3 of dateParts as integer
+
+        -- Parse time
+        set AppleScript's text item delimiters to ":"
+        set timeParts to text items of timePart
+        set AppleScript's text item delimiters to savedDelimiters
+
+        set hr to item 1 of timeParts as integer
+        set mn to item 2 of timeParts as integer
+
+        set newDate to current date
+        set newDate's year to y
+        set newDate's month to m
+        set newDate's day to d
+        set newDate's hours to hr
+        set newDate's minutes to mn
+        set newDate's seconds to 0
+
+        return newDate
+    end parseDateTime
     """,
     examples=[
         {
